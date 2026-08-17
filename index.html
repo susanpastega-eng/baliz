@@ -1,0 +1,335 @@
+<!-- @dsCard group="Site" viewport="1440x900" name="Home" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Balíz — Mentorias e Workshops</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+<style>
+body{margin:0;}
+@media (max-width: 900px) {
+  .bz-pad{padding-left:24px!important;padding-right:24px!important;}
+  .bz-header-logo{height:70px!important;}
+  .bz-footer-logo{height:90px!important;}
+  .bz-hero-title{font-size:2.5rem!important;}
+  .bz-grid-2{grid-template-columns:1fr!important;}
+  .bz-grid-3{grid-template-columns:1fr!important;}
+  .bz-grid-workshop{grid-template-columns:1fr!important;}
+  .bz-grid-founder{grid-template-columns:1fr!important;}
+  .bz-direcao-indent{margin-left:0!important;}
+  .bz-avance-title{font-size:2.25rem!important;}
+  .bz-footer-bottom{grid-template-columns:1fr!important;text-align:center;}
+  .bz-footer-bottom > div:first-child{justify-content:center!important;}
+  .bz-footer-nav{align-items:center!important;}
+  .bz-social-col{align-items:center!important;}
+}
+</style>
+<template id="__bundler_thumbnail" data-bg-color="#2D3F88">
+  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="200" fill="#2D3F88"/>
+    <text x="100" y="110" font-family="Georgia, serif" font-size="40" fill="#EEE9D2" text-anchor="middle">Balíz</text>
+  </svg>
+</template>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+function Wave({ color, flip }) {
+  const teeth = 16;
+  const w = 1200, h = 40;
+  const step = w / teeth;
+  let d = `M0,${flip ? h : 0}`;
+  for (let i = 0; i < teeth; i++) {
+    const x1 = i * step + step / 2;
+    const x2 = (i + 1) * step;
+    const y1 = flip ? 0 : h;
+    const y2 = flip ? h : 0;
+    d += ` Q${x1},${y1} ${x2},${y2}`;
+  }
+  d += ` L${w},${h * 2 - (flip ? h : 0)} L0,${h * 2 - (flip ? h : 0)} Z`;
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: 40 }}>
+      <path d={d} fill={color} />
+    </svg>
+  );
+}
+
+function PillButton({ children, bg, color = '#fff' }) {
+  return (
+    <button style={{ background: bg, color, border: 'none', padding: '16px 32px', borderRadius: 4, font: '700 0.8125rem var(--font-body)', letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer' }}>
+      {children}
+    </button>
+  );
+}
+
+function ServiceIcon({ type, stroke }) {
+  const s = { stroke, fill: 'none', strokeWidth: 3 };
+  if (type === 'cais') return <svg viewBox="0 0 100 100" style={{ width: 64, height: 64 }}><path d="M20 70 L50 25 L80 70" {...s} /></svg>;
+  if (type === 'mar-aberto') return <svg viewBox="0 0 100 100" style={{ width: 64, height: 64 }}><circle cx="42" cy="50" r="24" {...s} /><circle cx="58" cy="50" r="24" {...s} /></svg>;
+  if (type === 'oceano') return (
+    <svg viewBox="0 0 100 100" style={{ width: 64, height: 64 }}>
+      <path d="M20 40 Q50 20 80 40 Q50 60 20 40 Z" {...s} />
+      <path d="M20 62 Q50 42 80 62 Q50 82 20 62 Z" {...s} />
+    </svg>
+  );
+  return (
+    <svg viewBox="0 0 100 100" style={{ width: 64, height: 64 }}>
+      <circle cx="38" cy="38" r="20" {...s} />
+      <circle cx="62" cy="38" r="20" {...s} />
+      <circle cx="50" cy="62" r="20" {...s} />
+    </svg>
+  );
+}
+
+function MentoriaCard({ label, number, tag, type, bg, textured, textColor = '#fff', back }) {
+  const [flipped, setFlipped] = useState(false);
+  if (!back) {
+    return (
+      <div style={{ background: bg, backgroundImage: textured ? `url(../../assets/textures/${textured})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: 4, padding: 28, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 260, boxSizing: 'border-box' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div style={{ font: '700 2.125rem var(--font-display)', color: textColor }}>{label}</div>
+          <div style={{ font: 'var(--text-body-s)', color: textColor, opacity: 0.7 }}>{number}</div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '16px 0' }}>
+          <ServiceIcon type={type} stroke={textColor} />
+        </div>
+        <div style={{ font: '700 0.6875rem var(--font-body)', letterSpacing: '0.08em', textTransform: 'uppercase', color: textColor, lineHeight: 1.4 }}>{tag}</div>
+      </div>
+    );
+  }
+  return (
+    <div style={{ perspective: 1200, minHeight: 260 }} onClick={() => setFlipped(!flipped)}>
+      <div style={{ position: 'relative', height: 260, width: '100%', transformStyle: 'preserve-3d', transition: 'transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)', transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)', cursor: 'pointer' }}>
+        <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', background: bg, backgroundImage: textured ? `url(../../assets/textures/${textured})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: 4, padding: 28, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ font: '700 2.125rem var(--font-display)', color: textColor }}>{label}</div>
+            <div style={{ font: 'var(--text-body-s)', color: textColor, opacity: 0.7 }}>{number}</div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '16px 0' }}>
+            <ServiceIcon type={type} stroke={textColor} />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <div style={{ font: '700 0.6875rem var(--font-body)', letterSpacing: '0.08em', textTransform: 'uppercase', color: textColor, lineHeight: 1.4 }}>{tag}</div>
+            <div style={{ font: '700 0.6875rem var(--font-body)', letterSpacing: '0.06em', textTransform: 'uppercase', color: textColor, opacity: 0.8 }}>Saiba mais</div>
+          </div>
+        </div>
+        <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', background: bg, borderRadius: 4, padding: 28, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
+          <div>
+            <div style={{ font: '700 1.25rem var(--font-display)', color: textColor, marginBottom: 10 }}>{label}</div>
+            <p style={{ font: 'var(--text-body-s)', color: textColor, opacity: 0.9, lineHeight: 1.45, margin: 0 }}>{back}</p>
+          </div>
+          <div style={{ font: '700 0.6875rem var(--font-body)', letterSpacing: '0.06em', textTransform: 'uppercase', color: textColor, opacity: 0.8 }}>Voltar</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ComoFuncionaItem({ lead, rest }) {
+  return (
+    <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+      <div style={{ font: '700 1.25rem var(--font-body)', color: 'var(--brand-accent)', lineHeight: 1.5 }}>+</div>
+      <p style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)', margin: 0, lineHeight: 1.6 }}>
+        <strong>{lead}</strong>{rest}
+      </p>
+    </div>
+  );
+}
+
+function HeaderMenu() {
+  const [open, setOpen] = useState(false);
+  const links = [
+    { href: '#para-quem', label: 'Para quem' },
+    { href: '#mentorias', label: 'Mentorias' },
+    { href: '#workshops', label: 'Workshops' },
+    { href: '#sobre', label: 'Sobre' },
+    { href: '#contato', label: 'Contato' },
+    { href: 'https://balizcompany.substack.com/', label: 'Diário de Bordo', external: true },
+    { href: 'mailto:susan@baliz.co', label: 'Começar agora' },
+  ];
+  return (
+    <div style={{ position: 'relative' }}>
+      <button onClick={() => setOpen(!open)} aria-label="Menu" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8 }}>
+        <svg width="28" height="20" viewBox="0 0 28 20"><rect width="28" height="3" fill="var(--brand-primary)" /><rect y="8.5" width="28" height="3" fill="var(--brand-primary)" /><rect y="17" width="28" height="3" fill="var(--brand-primary)" /></svg>
+      </button>
+      {open && (
+        <nav style={{ position: 'absolute', top: '100%', right: 0, background: 'var(--baliz-papel)', boxShadow: 'var(--shadow-raised)', borderRadius: 4, padding: 16, display: 'flex', flexDirection: 'column', gap: 12, minWidth: 200, zIndex: 20 }}>
+          {links.map((l) => (
+            <a key={l.label} href={l.href} target={l.external ? '_blank' : undefined} rel={l.external ? 'noopener' : undefined} onClick={() => setOpen(false)} style={{ font: '700 0.8125rem var(--font-body)', letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--brand-primary)', textDecoration: 'none' }}>{l.label}</a>
+          ))}
+        </nav>
+      )}
+    </div>
+  );
+}
+
+function Home() {
+  return (
+    <div style={{ fontFamily: 'var(--font-body)', color: 'var(--fg-primary)' }}>
+
+      {/* Header */}
+      <header className="bz-pad" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 64px', background: 'var(--baliz-areia)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <img className="bz-header-logo" src="../../assets/logo/logotipo-tagline-azul-escuro.png" alt="Balíz — Mentorias e Workshops" style={{ height: 264 }} />
+        </div>
+        <HeaderMenu />
+      </header>
+
+      {/* Hero */}
+      <section style={{ background: 'linear-gradient(to bottom, var(--baliz-areia) 0%, var(--baliz-papel) 100%)', position: 'relative', overflow: 'hidden' }}>
+        <svg viewBox="0 0 200 200" style={{ position: 'absolute', top: -20, left: -20, width: 220, height: 220 }}>
+          {Array.from({ length: 10 }, (_, i) => i * 36).map((deg) => {
+            const rad = (deg * Math.PI) / 180;
+            return <line key={deg} x1="100" y1="100" x2={100 + Math.cos(rad) * 95} y2={100 + Math.sin(rad) * 95} stroke="var(--brand-accent)" strokeWidth="2" opacity="0.6" />;
+          })}
+        </svg>
+        <div className="bz-pad" style={{ textAlign: 'center', padding: '72px 64px 80px', maxWidth: 760, margin: '0 auto', position: 'relative' }}>
+          <h1 className="bz-hero-title" style={{ font: '700 3.625rem/1.15 var(--font-display)', textTransform: 'uppercase', color: 'var(--brand-primary)', margin: '0 0 24px' }}>Conduza sua carreira com confiança.</h1>
+          <p style={{ font: 'var(--text-body-l)', color: 'var(--brand-primary)', opacity: 0.85, margin: '0 0 32px' }}>
+            Mentorias, workshops e talks para quem está navegando a jornada profissional. Com acolhimento e ferramentas práticas para desenvolver habilidades e atitudes.
+          </p>
+          <a href="mailto:susan@baliz.co" style={{ textDecoration: 'none' }}><PillButton bg="var(--brand-accent)">Começar agora</PillButton></a>
+        </div>
+
+        <div id="para-quem" className="bz-pad bz-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, padding: '0 64px 96px', alignItems: 'center', maxWidth: 1200, margin: '0 auto' }}>
+          <div>
+            <h2 style={{ font: 'var(--text-display-m)', color: 'var(--brand-primary)', margin: '0 0 20px' }}>A construção profissional não vem com uma rota pronta</h2>
+            <p style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)', opacity: 0.85, margin: '0 0 28px' }}>
+              A Balíz foi criada para quem quer ter uma carreira brilhante. Seja liderando uma equipe pela primeira vez ou decidindo o próximo passo. Aqui, você encontra orientação para navegar nos desafios e tomar decisões.
+            </p>
+            <div style={{ font: '700 0.75rem var(--font-body)', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--brand-accent)', marginBottom: 12 }}>Para quem</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <p style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)', margin: 0 }}>Está vivendo a primeira liderança;</p>
+              <p style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)', margin: 0 }}>Tem dúvidas sobre a própria carreira;</p>
+              <p style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)', margin: 0 }}>Quer se posicionar profissionalmente com segurança.</p>
+            </div>
+          </div>
+          <img src="../../assets/grafismo-farol.png" alt="Farol, alga e concha — grafismo Balíz" style={{ width: '130%', maxWidth: 640, maxHeight: 460, objectFit: 'contain', objectPosition: 'bottom', alignSelf: 'end' }} />
+        </div>
+
+        {/* Mentorias / Workshops */}
+        <div id="servicos" className="bz-pad" style={{ padding: '0 64px 96px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <h2 id="mentorias" style={{ font: 'var(--text-display-m)', color: 'var(--brand-primary)', margin: '0 0 16px' }}>Mentorias para líderes</h2>
+          <p style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)', opacity: 0.85, maxWidth: 620, margin: '0 0 40px' }}>
+            A jornada de liderança acontece em etapas: do cais da preparação ao oceano da experiência. Cada mentoria individual da Balíz foi pensada para um momento dessa travessia.
+          </p>
+          <div className="bz-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 32 }}>
+            <MentoriaCard label="Cais" number="01" tag={<>Liderança<br />futura</>} type="cais" bg="var(--brand-primary)" textured="textura-azul-escuro.jpg" back="Mentoria para quem assume a primeira posição de liderança: base para decidir, priorizar e conduzir um time com segurança." />
+            <MentoriaCard label="Mar Aberto" number="02" tag={<>Primeira<br />liderança</>} type="mar-aberto" bg="var(--brand-primary)" textured="textura-azul-escuro.jpg" back="Mentoria para líderes que já gerenciam equipes e querem aprofundar gestão de pessoas e resultados." />
+            <MentoriaCard label="Oceano" number="03" tag={<>Líder dos<br />líderes</>} type="oceano" bg="var(--brand-primary)" textured="textura-azul-escuro.jpg" back="Mentoria para quem lidera outros líderes, com foco em visão de longo prazo e cultura organizacional." />
+          </div>
+          <h2 id="workshops" style={{ font: 'var(--text-display-m)', color: 'var(--brand-primary)', margin: '80px 0 16px' }}>Workshops em grupo</h2>
+          <p style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)', opacity: 0.85, maxWidth: 620, margin: '0 0 40px' }}>
+            O caminho profissional requer desenvolver várias habilidades e conhecimentos. Em grupo, vamos abordar temas essenciais e relevantes para irmos na direção certa juntos.
+          </p>
+          <div className="bz-grid-workshop" style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 48, alignItems: 'center', marginBottom: 32 }}>
+            <MentoriaCard label="Cardume" number="04" tag={<>Construção<br />profissional</>} type="cardume" bg="var(--baliz-azul-cristalino)" textured="textura-azul-claro.jpg" textColor="var(--brand-primary)" />
+            <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <li style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)' }}><strong>Por onde a IA não navega</strong> <em>- competências insubstituíveis;</em></li>
+              <li style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)' }}><strong>Conversas cruciais</strong> <em>- como ter conversas difíceis;</em></li>
+              <li style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)' }}><strong>Criatividade corporativa</strong> <em>- como incorporar as artes;</em></li>
+              <li style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)' }}><strong>Pensamento crítico</strong> <em>- saber ler e criticar como um cientista;</em></li>
+              <li style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)' }}><strong>Currículo</strong> <em>- transformar sua história em um CV completo.</em></li>
+            </ul>
+          </div>
+          <a href="mailto:susan@baliz.co" style={{ textDecoration: 'none' }}><PillButton bg="var(--brand-primary)">Pedir um workshop</PillButton></a>
+        </div>
+        </div>
+      </section>
+
+      {/* Direção / Avance */}
+      <section className="bz-pad" style={{ background: 'var(--baliz-areia)', padding: '96px 64px', position: 'relative', overflow: 'hidden' }}>
+        <svg viewBox="0 0 400 400" style={{ position: 'absolute', top: 0, left: 0, width: 400, height: 400, opacity: 0.5 }}>
+          <line x1="0" y1="200" x2="400" y2="0" stroke="var(--brand-accent)" strokeWidth="1.5" />
+          <path d="M40 220 A80 80 0 0 1 160 190" fill="none" stroke="var(--brand-accent)" strokeWidth="1.5" />
+          <line x1="60" y1="120" x2="140" y2="170" stroke="var(--brand-accent)" strokeWidth="1.5" />
+        </svg>
+        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative' }}>
+          <h2 style={{ font: 'var(--text-display-m)', color: 'var(--brand-primary)', maxWidth: 560, margin: '0 0 48px' }}>Direção, porque ninguém deveria navegar sem rumo.</h2>
+          <div className="bz-direcao-indent" style={{ font: '700 0.75rem var(--font-body)', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--brand-accent)', marginBottom: 20, marginLeft: 320 }}>Como funciona</div>
+          <div className="bz-direcao-indent" style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 620, marginLeft: 320 }}>
+            <ComoFuncionaItem lead="Acolhimento e segurança: " rest="um espaço tranquilo para desabafar e aprender." />
+            <ComoFuncionaItem lead="Experiência real: " rest="quem conduz já passou por situações parecidas e fala com empatia." />
+            <ComoFuncionaItem lead="Ferramentas simples: " rest="nada de jargões ou teorias distantes da prática." />
+            <ComoFuncionaItem lead="Conteúdo personalizado: " rest="cada encontro é adaptado à realidade da pessoa ou grupo." />
+          </div>
+        </div>
+      </section>
+      <section className="bz-pad" style={{ background: 'var(--brand-primary)', padding: '96px 64px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <img src="../../assets/grafismo-oceano.png" alt="" style={{ position: 'absolute', right: -40, bottom: 0, width: 380, opacity: 0.35 }} />
+        <h2 className="bz-avance-title" style={{ font: '700 3.125rem var(--font-display)', textTransform: 'uppercase', color: 'var(--baliz-papel)', margin: '0 0 16px', position: 'relative' }}>Avance no rumo certo</h2>
+        <p style={{ font: 'var(--text-body-l)', color: 'var(--baliz-papel)', opacity: 0.85, margin: '0 0 32px', position: 'relative' }}>Sua carreira agradece!</p>
+        <div style={{ position: 'relative' }}><a href="mailto:susan@baliz.co" style={{ textDecoration: 'none' }}><PillButton bg="var(--brand-accent)">Começar agora</PillButton></a></div>
+      </section>
+
+      {/* Founder */}
+      <section id="sobre" style={{ background: 'var(--baliz-azul-cristalino)', position: 'relative' }}>
+        <div style={{ height: 56, background: 'var(--brand-primary)' }} />
+        <div className="bz-pad bz-grid-founder" style={{ display: 'grid', gridTemplateColumns: '1fr 420px', gap: 48, padding: '80px 64px 96px', maxWidth: 1200, margin: '0 auto', alignItems: 'start' }}>
+          <div>
+            <h2 style={{ font: 'var(--text-display-m)', color: 'var(--brand-primary)', margin: '0 0 32px' }}>Traçe a rota com clareza: cada decisão orienta sua carreira.</h2>
+            <div style={{ font: '700 0.75rem var(--font-body)', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--brand-primary)', marginBottom: 20 }}>Susan Pastega | Proprietária da Balíz</div>
+            <p style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)', margin: '0 0 20px' }}>
+              Foram mais de 20 anos no mundo corporativo, passando por diferentes empresas e aprendendo de perto como pessoas e negócios se transformam. A maior parte dessa caminhada foi dedicada à gestão de riscos no mercado financeiro, um olhar estratégico que hoje se soma ao trabalho com pessoas.
+            </p>
+            <p style={{ font: 'var(--text-body-m)', color: 'var(--brand-primary)', margin: 0 }}>
+              Desde a pandemia, meu foco está nas mentorias e no desenvolvimento de lideranças, seja dentro das empresas, seja em programas independentes. Tenho uma pós graduação em Gestão Estratégica de Pessoas e Mestrado em Gestão de Riscos pela NYU. Além de escrever regularmente no LinkedIn e no Substack, fui palestrante TEDx em 2019.
+            </p>
+          </div>
+          <img src="../../assets/founder-photo.jpg" alt="Susan Pastega" style={{ width: '100%', borderRadius: 4 }} />
+        </div>
+        <Wave color="var(--baliz-papel)" />
+      </section>
+
+      {/* Newsletter + Footer */}
+      <footer id="contato" className="bz-pad" style={{ background: 'var(--brand-primary)', padding: '80px 64px 40px' }}>
+        <div className="bz-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, maxWidth: 1200, margin: '0 auto 80px' }}>
+          <div>
+            <h2 style={{ font: 'var(--text-display-m)', color: 'var(--baliz-papel)', margin: '0 0 20px' }}>Diário de Bordo</h2>
+            <p style={{ font: 'var(--text-body-m)', color: 'var(--baliz-papel)', opacity: 0.85, maxWidth: 420, margin: '0 0 24px' }}>
+              A newsletter da Balíz é um registro contínuo de inspirações para orientar sua jornada profissional com novas rotas e horizontes.
+            </p>
+            <div style={{ display: 'flex', maxWidth: 420 }}>
+              <iframe src="https://balizcompany.substack.com/embed" width="100%" height="150" style={{ border: '1px solid var(--baliz-papel)', background: 'var(--baliz-papel)', borderRadius: 4 }} frameBorder="0" scrolling="no" title="Inscreva-se no Diário de Bordo"></iframe>
+            </div>
+          </div>
+          <div className="bz-social-col" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-start', gap: 16, paddingTop: 8 }}>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <a href="https://www.linkedin.com/company/bal%C3%ADz/" target="_blank" rel="noopener" style={{ width: 40, height: 40, background: 'var(--baliz-papel)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 4 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--brand-accent)"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.98h4.56V24H.22V8.98zM8.5 8.98h4.37v2.05h.06c.61-1.15 2.1-2.37 4.32-2.37 4.62 0 5.47 3.04 5.47 6.99V24h-4.55v-6.77c0-1.62-.03-3.7-2.25-3.7-2.26 0-2.6 1.76-2.6 3.58V24H8.5V8.98z"/></svg>
+              </a>
+              <a href="https://instagram.com/baliz.company" target="_blank" rel="noopener" style={{ width: 40, height: 40, background: 'var(--baliz-papel)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 4 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-accent)" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="4.5" /><circle cx="17.5" cy="6.5" r="1" fill="var(--brand-accent)" stroke="none" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="bz-footer-bottom" style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 48, maxWidth: 1200, margin: '0 auto 64px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img className="bz-footer-logo" src="../../assets/logo/logotipo-tagline-branco.png" alt="Balíz — Mentorias e Workshops" style={{ height: 264 }} />
+          </div>
+          <nav className="bz-footer-nav" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <a href="#para-quem" style={{ font: '700 0.75rem var(--font-body)', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--baliz-papel)', textDecoration: 'none' }}>Para quem</a>
+            <a href="#mentorias" style={{ font: '700 0.75rem var(--font-body)', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--baliz-papel)', textDecoration: 'none' }}>Mentorias</a>
+            <a href="#workshops" style={{ font: '700 0.75rem var(--font-body)', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--baliz-papel)', textDecoration: 'none' }}>Workshops</a>
+            <a href="#sobre" style={{ font: '700 0.75rem var(--font-body)', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--baliz-papel)', textDecoration: 'none' }}>Sobre</a>
+            <a href="mailto:susan@baliz.co" style={{ font: '700 0.75rem var(--font-body)', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--brand-accent)', textDecoration: 'none' }}>Começar agora</a>
+          </nav>
+        </div>
+
+        <p style={{ textAlign: 'center', font: 'var(--text-body-s)', color: 'var(--baliz-papel)', opacity: 0.7, margin: 0 }}>© Baliz Mentorias e Workshops 2026. Todos os direitos reservados.</p>
+      </footer>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Home />);
+</script>
+</body>
+</html>
