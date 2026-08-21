@@ -1,14 +1,41 @@
-# UI Kit — Site institucional Balíz
+# Site Balíz
 
-Recriação de alta fidelidade das telas do site institucional da Balíz, composta a partir dos componentes de `components/` e dos tokens em `tokens/`.
+Landing page única da Balíz — mentorias e workshops de liderança.
 
-## Telas
-- `index.html` — Home: hero com grafismo (círculos + linhas radiantes ao redor do símbolo), apresentação dos 4 serviços em cards que giram 180° ao clicar em "saiba mais" (frente = selo + público; verso = descrição), seção "Sobre a fundadora", footer com logo em destaque.
+**No ar:** [baliz.co](https://baliz.co) · publicado via GitHub Pages a partir do `index.html` na raiz do repositório.
 
-## Pendências (próximas telas, a construir sob demanda)
-- Página de serviço (template único para Cais/Mar Aberto/Oceano/Cardume)
-- Sobre a Balíz
-- Contato / agendar conversa
-- **Diário de Bordo**: newsletter no Substack (não é uma página do site — o link do menu abre o Substack em nova aba; falta a URL real assim que a newsletter for criada)
+## Arquitetura
 
-Copy é rascunho — textos entre colchetes `[...]` marcam onde entra conteúdo real do time Balíz.
+Página única com navegação por anchor links. Não há páginas internas.
+
+| Seção | Anchor | Conteúdo |
+|---|---|---|
+| Hero | — | Título, grafismo do farol, CTA "Começar agora" |
+| Para quem | `#para-quem` | Quatro perfis atendidos |
+| Mentorias | `#mentorias` | Cais, Mar Aberto e Oceano em cards que giram 180° ao clique |
+| Workshops | `#workshops` | Workshops em grupo |
+| Direção | — | Tópicos do método |
+| Sobre | `#sobre` | Bio da fundadora com foto |
+| Contato / rodapé | `#contato` | Newsletter, links, logo |
+
+Links externos: **Diário de Bordo** aponta para a newsletter no Substack; **Começar agora** e **Contato** abrem `mailto:susan@baliz.co`.
+
+## Publicação
+
+O arquivo servido é um bundle standalone: HTML, CSS, JS (React via Babel) e todas as imagens embutidas como data URIs num único arquivo. Isso evita dependência de caminhos relativos de assets no GitHub Pages.
+
+Fluxo de atualização:
+
+1. Editar o fonte em `ui_kits/site/index.html` (no projeto de design)
+2. Gerar o bundle standalone
+3. Subir no repositório como `index.html` na raiz — via **Add file → Upload files**, arrastando o arquivo (não colar conteúdo em editor de texto: linhas muito longas podem truncar)
+
+O arquivo `.nojekyll` na raiz impede o GitHub Pages de processar o HTML pelo Jekyll.
+
+## Domínio
+
+`baliz.co` (GoDaddy) aponta para o GitHub Pages via 4 registros A (`185.199.108–111.153`) e CNAME `www` → `susanpastega-eng.github.io`. HTTPS via certificado do GitHub Pages.
+
+## Responsivo
+
+Breakpoints em `≤900px` (mobile) e `901–1300px` (laptop). No mobile o menu do cabeçalho é oculto, as logos do cabeçalho e do rodapé ficam centralizadas a 190px, e todas as grades colapsam para coluna única.
